@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Similar Names Finder</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Similar Names Finder</h1>
+            <p>Enter a name to find similar-sounding alternatives</p>
+        </div>
+
+        <form id="searchForm" class="search-form">
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="nameInput" 
+                    placeholder="Enter a name..."
+                    required
+                >
+                <button type="submit">
+                    <span class="search-icon">🔍</span>
+                    <span class="loader hidden">⌛</span>
+                </button>
+            </div>
+        </form>
+
+        <div id="errorMessage" class="error-message hidden"></div>
+
+        <div class="results-container">
+            <h2>Similar Names</h2>
+            <div id="resultsList" class="results-list">
+                <p class="empty-message">Enter a name to see results</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='api.js') }}"></script>
+    <script src="{{ url_for('static', filename='ui.js') }}"></script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
