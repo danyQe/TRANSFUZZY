@@ -8,9 +8,11 @@ from sklearn.metrics.pairwise import cosine_similarity
 from scipy.spatial.distance import euclidean, cityblock
 from scipy.stats import pearsonr
 
-def compute_similarity_metrics(name1, name2):
+def compute_similarity_metrics(row):
     """Compute similarity metrics for the given names."""
     # Check if the names start with the same character
+    name1 = str(row['name1']).strip().lower()
+    name2 = str(row['name2']).strip().lower()
     if name1[0].lower() != name2[0].lower():
         # If not, return a set of zeros for metrics and set the similarity result as False
         return 0, 0, 0, 0, 0, 0, 0, 0
@@ -53,7 +55,8 @@ def compute_similarity_metrics(name1, name2):
     pearson_sim = (pearson_corr + 1) / 2  # Normalize to [0, 1]
 
     # Return all computed metrics as a tuple
-    return soundex_ratio, metaphone_ratio, levenshtein_ratio, jaro_winkler_ratio, cosine_sim, euclidean_sim, manhattan_sim, pearson_sim
+    return pd.Series([soundex_ratio, metaphone_ratio, levenshtein_ratio, jaro_winkler_ratio,
+                      cosine_sim, euclidean_sim, manhattan_sim, pearson_sim])
 
 # Function to get the embedding for a name using SentenceTransformer
 def get_embedding(name):
@@ -97,26 +100,8 @@ def compare_names(input_file):
         # Skip rows where names don't start with the same character
         if row['name1'][0].lower() != row['name2'][0].lower():
             continue
-
-        # Compute similarity metrics
-        ratios = compute_similarity_metrics(row['name1'], row['name2'])
-
-        # Create a DataFrame for prediction
-        df = pd.DataFrame({
-            'name1': [row['name1']],
-            'name2': [row['name2']],
-            'soundex_ratio': [ratios[0]],
-            'metaphone_ratio': [ratios[1]],
-            'levenshtein_ratio': [ratios[2]],
-            'jaro_winkler_ratio': [ratios[3]],
-            'cosine_sim': [ratios[4]],
-            'euclidean_sim': [ratios[5]],
-            'manhattan_sim': [ratios[6]],
-            'pearson_sim': [ratios[7]]
-        })
-
-        # Preprocess the row for prediction
-        input_row = preprocess_row(df.iloc[0])  # Get the first row as an array
+        
+        input_row = preprocess_row(row)  # Use the current row instead of the first row
         prediction = predict_label(model, input_row)  # Predict label
 
         # Append the results

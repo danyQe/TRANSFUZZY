@@ -71,7 +71,6 @@ def calculate_ratios(input_csv, output_csv=None):
     df[['soundex_ratio', 'metaphone_ratio', 'levenshtein_ratio', 'jaro_winkler_ratio',
         'cosine_similarity', 'euclidean_similarity', 'manhattan_similarity', 'pearson_similarity']] = df.apply(compute_similarity_metrics, axis=1)
     # Add an empty column with the name 'label' at the end of the DataFrame
-    df['label'] = ''
 
     # Save the resulting DataFrame to a new CSV file
     df.to_csv(output_csv, index=False)
